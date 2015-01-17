@@ -34,4 +34,21 @@ module.exports = {
       return containsFunctionality(parsedCode, functionality);
     });
   },
+
+  /**
+   * Checks whether a snippet of javascript code contains none of the unwanted
+   * bits of functionality.
+   *
+   * @param  {string}   code                      The snippet of code to check
+   * @param  {string[]} requiredFunctionalityList List of bad statement types.
+   * @return {boolean}                            Whether or not they are all
+   *                                              absent.
+   */
+  blacklist: function(code, requiredFunctionalityList) {
+    var parsedCode = parser.parse(code);
+
+    return _.every(requiredFunctionalityList, function (functionality) {
+      return !containsFunctionality(parsedCode, functionality);
+    });
+  },
 }
