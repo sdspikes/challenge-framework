@@ -1,0 +1,37 @@
+<html>
+<head>
+<title>Simple Challenge Framework</title>
+<style>
+body {
+    background-color: linen;
+    font-size: 20;
+}
+#test-output {
+    background-color: lightblue;
+    border-color: darkblue;
+    border-style: solid;
+    float: right;
+    height: 560px;
+    width: 600px;
+    white-space: pre;
+}
+</style>
+</head>
+<body>
+Use the box below to implement a js function called <code>fib</code> that takes one argument, <code>n</code> and returns the <code>n</code>th <a href="http://en.wikipedia.org/wiki/Fibonacci_number">fibbonaci number</a>.
+<br><br>
+Your function should run in linear time (<code>O(n)</code>).
+<hr>
+
+<textarea id="student-code" rows="40" cols="80">//your code here</textarea>
+<div id="test-output"></div>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script>
+$("#student-code").keypress(function(eventObject) {
+  // For now, just mirror the textarea, later we'll run tests and show
+  // the output here.
+  $("#test-output").text($("#student-code").val());
+});
+</script>
+</body>
+</html>
