@@ -15,6 +15,34 @@ function containsFunctionality(tree, functionality) {
   });
 }
 
+function containsFunctionalityStructure(tree, functionalityStructure) {
+  if (tree["type"] === functionalityStructure["type"]) {
+    // If the top level ones match and the required structure doesn't have
+    // any levels left, we're done!
+    if (!_.has(functionalityStructure, "body")) {
+      return true;
+    }
+    // but if there are still levels left, we need to check everything under us
+    // for the rest of the structure.
+    else {
+      structure = functionalityStructure["body"];
+    }
+  }
+  return _.some(tree, function(attrValue, key) {
+    return _.some(structure, function (subStructure) {
+
+      if (!_.isArray(attrValue) && _.isObject(attrValue)) {
+        return containsFunctionalityStructure(attrValue, subStructure);
+      }
+      else if (_.isArray(attrValue)) {
+        return _.some(attrValue, function (subTree) {
+          return containsFunctionalityStructure(subTree, subStructure);
+        });
+      }
+    });
+  });
+}
+
 module.exports = {
 
   /**
@@ -51,4 +79,23 @@ module.exports = {
       return !containsFunctionality(parsedCode, functionality);
     });
   },
+
+  /**
+   * Checks whether a snippet of javascript has the desired structure.
+   *
+   * The structure passed in must be of the form
+   * [{
+   * 	 "type" : "outermostfunctionality"
+   * 	 "body" : [{ "type" : "second level funcitonality", "body": ...}, ...]
+   * }, ...]
+   *
+   * @param {string} code              The code to check.
+   * @param {object} requiredStructure The structure to compare against.
+   */
+  hasStructure: function(code, requiredStructure) {
+    if (_.isEmpty(requiredStructure)) { return true; }
+    var parsedCode = parser.parse(code);
+
+    return containsFunctionalityStructure(parsedCode, requiredStructure);
+  }
 }
