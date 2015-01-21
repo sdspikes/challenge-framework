@@ -22,3 +22,8 @@ jasmine-node spec
 ```
 
 
+## Choice of parser
+
+I found myself wavering between [acorn](http://marijnhaverbeke.nl/acorn/) and [esprima](http://esprima.org/).  Acorn is a bit smaller and faster, but not significantly so.  I saw on the esprima page that it could be used with RequireJS and decided to give that a go for the web app since I hadn't played with RequireJS before and thought that it might be good to see how it works.  Acorn seems not to support this, so I'm stuck with esprima (or at least is not interchangable with esprima in this aspect -- I chose not to spend too much time seeing if I could massage acorn into working with RequireJS).
+
+It looks like acorn has some interesting stuff with fault-tolerant parsing that would be fun to play with, but I didn't think to look into it until after I coded myself into a corner with esprima.  
