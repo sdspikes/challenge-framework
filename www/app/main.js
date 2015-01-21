@@ -1,11 +1,11 @@
 $("#student-code").keyup(function(eventObject) {
   var studentCode = $("#student-code").val();
-  require(['esprima', 'testing-framework'], function (parser, tester) {
+  require(['testing-framework'], function (tester) {
       var message;
+      // I considered adding the error handling to the API but it seems like you
+      // might want to be able to provide custom messages in the tests, so I
+      // left it to the the client to deal with thrown errors.
       try {
-        var parsed = parser.parse(studentCode);
-        thing = JSON.stringify(parsed, null, 4);
-        console.log(thing);
         if (tester.whitelist(studentCode, ['VariableDeclaration'])) {
           message = "Great, you declared a variable!";
         } else {
