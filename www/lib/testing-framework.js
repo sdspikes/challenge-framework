@@ -1,7 +1,16 @@
-define("testing-framework", ["require", "exports", "esprima", "underscore"],
-  function (require, exports, parser, _) {
+(function (root, factory) {
+    'use strict';
 
+    // Universal Module Definition (UMD) to support AMD, CommonJS/Node.js,
+    // Rhino, and plain browser loading.
 
+    /* istanbul ignore next */
+    if (typeof define === 'function' && define.amd) {
+        define(["exports", "esprima", "underscore"], factory);
+    } else if (typeof exports !== 'undefined') {
+        factory(exports, require("esprima"), require("underscore"));
+    }
+}(this, function (exports, parser, _) {
     function containsFunctionality(tree, functionality) {
       if (tree["type"] === functionality) {
         return true;
@@ -16,6 +25,7 @@ define("testing-framework", ["require", "exports", "esprima", "underscore"],
     };
 
     function containsFunctionalityStructure(tree, functionalityStructure) {
+      structure = [functionalityStructure];
       if (tree["type"] === functionalityStructure["type"]) {
         // If the top level ones match and the required structure doesn't have
         // any levels left, we're done!
@@ -94,7 +104,8 @@ define("testing-framework", ["require", "exports", "esprima", "underscore"],
       if (_.isEmpty(requiredStructure)) { return true; }
       var parsedCode = parser.parse(code);
 
-      return containsFunctionalityStructure(parsedCode, requiredStructure);
+      return _.every(requiredStructure, function (subStructure) {
+          return containsFunctionalityStructure(parsedCode, subStructure);
+      });
     };
-  }
-);
+}));

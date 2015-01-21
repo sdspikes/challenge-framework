@@ -5,6 +5,7 @@ $("#student-code").keyup(function(eventObject) {
       try {
         var parsed = parser.parse(studentCode);
         thing = JSON.stringify(parsed, null, 4);
+        console.log(thing);
         if (tester.whitelist(studentCode, ['VariableDeclaration'])) {
           message = "Great, you declared a variable!";
         } else {

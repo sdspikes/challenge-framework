@@ -1,9 +1,10 @@
-var tester = require('../testing-framework.js');
+var tester = require('../www/lib/testing-framework.js');
 var snippet = 'var answer = 42; if (answer <10) { console.log("oh noes"); }';
 //
 // var parser = require('esprima');
 // console.log(JSON.stringify(parser.parse(whileSnippet), null, 4));
 
+var whileSnippetWithVar = 'var answer = 42; while(true) { if (answer <10) { console.log("oh noes"); } var x = 2; }';
 var whileSnippet = 'var answer = 42; while(true) { if (answer <10) { console.log("oh noes"); }}';
 
 describe('Whitelist tests', function() {
@@ -52,7 +53,7 @@ describe('Blacklist tests', function() {
 
 var whileStructure = [{
   'type' : 'WhileStatement',
-  'body' : [{'type' : 'IfStatement'}]
+  'body' : [{'type' : 'IfStatement'}, {'type': 'VariableDeclarator'}]
 }];
 var doubleWhileStructure = [{
   'type' : 'WhileStatement',
@@ -60,8 +61,11 @@ var doubleWhileStructure = [{
 }];
 
 describe('Structure tests', function() {
-  it('should have the right structure', function() {
-    expect(tester.hasStructure(whileSnippet, whileStructure)).toEqual(true);
+  it('should have the right structure with var', function() {
+    expect(tester.hasStructure(whileSnippetWithVar, whileStructure)).toEqual(true);
+  });
+  it('should have the wrong structure without var', function() {
+    expect(tester.hasStructure(whileSnippet, whileStructure)).toEqual(false);
   });
   it('should not have the structure', function() {
     expect(tester.hasStructure(snippet, whileStructure)).toEqual(false);
