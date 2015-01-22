@@ -20,6 +20,8 @@
            return _.some(attrValue, function (subTree) {
              return containsFunctionality(subTree, functionality);
            });
+        } else if (_.isObject(attrValue)) {
+          return containsFunctionality(attrValue, functionality);
         }
       });
     };

@@ -6,6 +6,13 @@ var snippet = 'var answer = 42; if (answer <10) { console.log("oh noes"); }';
 
 var whileSnippetWithVar = 'var answer = 42; while(true) { if (answer <10) { console.log("oh noes"); } var x = 2; }';
 var whileSnippet = 'var answer = 42; while(true) { if (answer <10) { console.log("oh noes"); }}';
+var continueSnippet = "\
+for (var i = 2; i < n; i++) {\
+  if (stuff) {\
+   continue;\
+  }\
+}";
+
 
 describe('Whitelist tests', function() {
   it('should contain all statements', function() {
@@ -21,14 +28,17 @@ describe('Whitelist tests', function() {
       ['WhileStatement', 'IfStatement', 'VariableDeclaration']))
       .toEqual(false);
   });
-  it('should be have it all', function() {
+  it('should have it all', function() {
     expect(tester.whitelist(whileSnippet,
       ['WhileStatement', 'IfStatement', 'VariableDeclaration']))
-      .toEqual(false);
+      .toEqual(true);
   });
   it('should be vacuously true', function() {
     expect(tester.whitelist(snippet, []))
       .toEqual(true);
+  });
+  it('should find the continue', function() {
+    expect(tester.whitelist(continueSnippet, ['ContinueStatement'])).toEqual(true);
   });
 });
 
@@ -48,6 +58,9 @@ describe('Blacklist tests', function() {
   it('should be vacuously true', function() {
     expect(tester.blacklist(snippet, [])).toEqual(true);
   });
+  it('should find the continue', function() {
+    expect(tester.blacklist(continueSnippet, ['ContinueStatement'])).toEqual(false);
+  });
 });
 
 
@@ -60,7 +73,25 @@ var doubleWhileStructure = [{
   'body' : [{'type' : 'WhileStatement'}]
 }];
 
+var fib = "function fib(n) {\
+  prev = 1;\
+  current = 1;\
+  for (var i = 2; i < n; i++) {\
+    next = prev + current;\
+    prev = current;\
+    current = next;\
+  }\
+  return current;\
+}";
+var fibStructure =  [{
+  'type' : 'FunctionDeclaration',
+  'body' : [{ 'type' : 'ForStatement' }]
+}];
+
 describe('Structure tests', function() {
+  it('fib should have the right structure', function() {
+    expect(tester.hasStructure(fib, fibStructure)).toEqual(true);
+  });
   it('should have the right structure with var', function() {
     expect(tester.hasStructure(whileSnippetWithVar, whileStructure)).toEqual(true);
   });
